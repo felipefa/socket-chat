@@ -1,0 +1,1 @@
+# Socket Chat - ESLint Config
