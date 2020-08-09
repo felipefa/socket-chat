@@ -5,6 +5,12 @@
   "author": "Felipe Araujo <devaraujofelipe@gmail.com>",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build:server": "yarn workspace @socket-chat/server run build",
+    "build:web": "yarn workspace @socket-chat/web run build",
+    "start:server": "yarn workspace @socket-chat/server run start",
+    "start:web": "yarn workspace @socket-chat/web run start"
+  },
   "workspaces": {
     "packages": [
       "packages/*",
