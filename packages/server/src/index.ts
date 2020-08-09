@@ -6,10 +6,15 @@ import App from './App';
 const server = http.createServer(App);
 const io = socketIO(server);
 
+const MESSAGES = [];
+
 io.on('connection', socket => {
-  socket.emit('readMessages', 'readMessages');
-  socket.on('clientSendMessage', data => {
-    console.log('call sendMessage service ' + data);
+  socket.emit('readMessages', MESSAGES);
+
+  socket.on('clientSendMessage', message => {
+    MESSAGES.push(message);
+
+    socket.broadcast.emit('newMessage', message);
   });
 });
 
