@@ -9,7 +9,8 @@
     "build:server": "yarn workspace @socket-chat/server run build",
     "build:web": "yarn workspace @socket-chat/web run build",
     "start:server": "yarn workspace @socket-chat/server run start",
-    "start:web": "yarn workspace @socket-chat/web run start"
+    "start:web": "yarn workspace @socket-chat/web run start",
+    "heroku-postbuild": "yarn && yarn build:server"
   },
   "workspaces": {
     "packages": [
