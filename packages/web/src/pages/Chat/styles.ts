@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 interface MessageProps {
-  isMe: boolean;
+  $isMe: boolean;
 }
 
 export const Container = styled.div`
@@ -95,8 +95,8 @@ export const Message = styled.div<MessageProps>`
     margin-top: 8px;
   }
 
-  ${({ isMe }) =>
-    isMe &&
+  ${({ $isMe }) =>
+    $isMe &&
     css`
       align-self: flex-end;
       background: var(--accent-color);
@@ -105,6 +105,7 @@ export const Message = styled.div<MessageProps>`
 
   p {
     font-weight: 500;
+    white-space: pre-wrap;
   }
 
   small {

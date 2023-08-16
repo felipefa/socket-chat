@@ -1,13 +1,12 @@
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Routes as RoutesFromReactRouterDom } from 'react-router-dom';
 
 import { Chat } from '../pages';
 
 const Routes: React.FC = () => (
-  <Switch>
-    <Redirect exact from="/" to="/chat" />
-    <Route path="/chat" component={Chat} />
-  </Switch>
+  <RoutesFromReactRouterDom>
+    <Route path="/" Component={Chat} />
+  </RoutesFromReactRouterDom>
 );
 
 export default Routes;

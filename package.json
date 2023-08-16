@@ -19,6 +19,6 @@
   },
   "devDependencies": {
     "@socket-chat/eslint-config": "*",
-    "typescript": "^3.9.7"
+    "typescript": "^5.1.6"
   }
 }

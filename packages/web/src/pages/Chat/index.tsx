@@ -10,24 +10,26 @@ interface IMessage {
   time: string;
 }
 
-const user = 'Felipe';
+const io = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`, {
+  transports: ['websocket'],
+});
 
 const Chat: React.FC = () => {
   const messagesDivRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLInputElement>(null);
+  const hasSetIoListeners = useRef(false);
 
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [io] = useState(socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`));
 
-  const handleSubmitMessage = useCallback(
-    event => {
+  const handleSubmitMessage: React.FormEventHandler<HTMLFormElement> | undefined = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
       const newMessage = {
         author: io.id,
         content: String(messageInputRef.current?.value),
-        id: `${user}${new Date().getTime}`,
-        time: new Date().toLocaleTimeString(),
+        id: `${new Date().getTime()}`,
+        time: new Date().toLocaleString(),
       };
 
       setMessages(oldMessages => [...oldMessages, newMessage]);
@@ -49,38 +51,42 @@ const Chat: React.FC = () => {
         }
       }, 100);
     },
-    [io],
+    [],
   );
 
   useEffect(() => {
-    io.on('readMessages', (messagesRead: IMessage[]) => {
-      setMessages(messagesRead);
+    if (!hasSetIoListeners.current) {
+      io.on('readMessages', (messagesRead: IMessage[]) => {
+        setMessages(messagesRead);
 
-      if (messagesDivRef.current) {
-        messagesDivRef.current.scrollTo({
-          behavior: 'smooth',
-          left: 0,
-          top: messagesDivRef.current.scrollHeight,
-        });
-      }
-    });
+        setTimeout(() => {
+          if (messagesDivRef.current) {
+            messagesDivRef.current.scrollTo({
+              behavior: 'smooth',
+              left: 0,
+              top: messagesDivRef.current.scrollHeight,
+            });
+          }
+        }, 100);
+      });
 
-    io.on('newMessage', (message: IMessage) => {
-      setMessages(oldMessages => [...oldMessages, message]);
+      io.on('newMessage', (message: IMessage) => {
+        setMessages(oldMessages => [...oldMessages, message]);
 
-      if (messagesDivRef.current) {
-        messagesDivRef.current.scrollTo({
-          behavior: 'smooth',
-          left: 0,
-          top: messagesDivRef.current.scrollHeight,
-        });
-      }
-    });
+        setTimeout(() => {
+          if (messagesDivRef.current) {
+            messagesDivRef.current.scrollTo({
+              behavior: 'smooth',
+              left: 0,
+              top: messagesDivRef.current.scrollHeight,
+            });
+          }
+        }, 100);
+      });
 
-    return () => {
-      io.disconnect();
-    };
-  }, [io]);
+      hasSetIoListeners.current = true;
+    }
+  }, []);
 
   return (
     <Container>
@@ -91,10 +97,10 @@ const Chat: React.FC = () => {
       <div>
         <div ref={messagesDivRef}>
           {messages.map(message => (
-            <Message key={message.id} isMe={message.author === io.id}>
+            <Message key={message.id} $isMe={message.author === io.id}>
               <p>{message.content}</p>
               <small>
-                {message.author} - {message.time}
+                {message.author === io.id ? 'You' : message.author} - {message.time}
               </small>
             </Message>
           ))}

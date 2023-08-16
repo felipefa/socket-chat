@@ -1,12 +1,22 @@
 import http from 'http';
-import socketIO from 'socket.io';
+import { Server } from 'socket.io';
 
 import App from './App';
 
 const server = http.createServer(App);
-const io = socketIO(server);
+const io = new Server(server, {
+  cors: { origin: '*' },
+  transports: ['websocket'],
+});
 
-const MESSAGES = [];
+const MESSAGES = [
+  {
+    author: 'Server',
+    content: 'Welcome!\nFeel free to send a message :)',
+    id: `server-${new Date().getTime()}`,
+    time: new Date().toLocaleString(),
+  }
+];
 
 io.on('connection', socket => {
   socket.emit('readMessages', MESSAGES);
